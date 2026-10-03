@@ -2,6 +2,7 @@ import allure
 from playwright.sync_api import Page
 
 from pages.base_page import BasePage
+from pages.components.cart_modal import CartModal
 
 
 class ProductDetailsPage(BasePage):
@@ -12,6 +13,8 @@ class ProductDetailsPage(BasePage):
     __AVAILABILITY__ = ".product-information p:has(b:text-is('Availability:'))"
     __CONDITION__ = ".product-information p:has(b:text-is('Condition:'))"
     __BRAND__ = ".product-information p:has(b:text-is('Brand:'))"
+    __QUANTITY__ = '#quantity'
+    __ADD_TO_CART__ = '.product-information button.cart'
 
     __DETAILS__ = {
         "name": __PRODUCT_NAME__,
@@ -25,6 +28,7 @@ class ProductDetailsPage(BasePage):
 
     def __init__(self, page: Page):
         super().__init__(page)
+        self.cart_modal = CartModal(page)
 
     @allure.step("Get product name")
     def get_name(self) -> str:
@@ -37,3 +41,19 @@ class ProductDetailsPage(BasePage):
     @allure.step("Check that all product details are visible")
     def is_details_visible(self) -> bool:
         return all(self.is_detail_visible(detail) for detail in self.__DETAILS__)
+
+    @allure.step("Get product price")
+    def get_price(self) -> int:
+        return self.price_to_int(self.get_text(self.__PRICE__))
+
+    @allure.step("Add product to cart with quantity {quantity}")
+    def add_to_cart(self, quantity: int = 1):
+        self.fill_text(self.__QUANTITY__, str(quantity))
+        self.click(self.__ADD_TO_CART__)
+        self.cart_modal.wait_until_open()
+
+    def continue_shopping(self):
+        self.cart_modal.continue_shopping()
+
+    def view_cart(self):
+        self.cart_modal.view_cart()
