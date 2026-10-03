@@ -1,3 +1,5 @@
+import re
+
 from playwright.sync_api import Page, TimeoutError as PlaywrightTimeoutError
 
 class BasePage:
@@ -56,3 +58,8 @@ class BasePage:
 
     def get_page_url(self):
         return self.page.url
+
+    @staticmethod
+    def price_to_int(price_text: str) -> int:
+        # "Rs. 500" -> 500
+        return int(re.sub(r"\D", "", price_text))
