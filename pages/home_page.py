@@ -5,6 +5,7 @@ from pages.base_page import BasePage
 
 
 class HomePage(BasePage):
+
     # the slider has 3 slides, each with its own button - only the current slide's button is visible
     __TEST_CASE_BUTTONS__ ='.test_cases_list:visible'
     def __init__(self,page:Page):

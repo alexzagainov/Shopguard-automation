@@ -3,6 +3,7 @@ from typing import Dict
 import pytest
 
 from pages.base_page import BasePage
+from pages.components.footer import Footer
 from pages.components.header import Header
 from pages.contact_us_page import ContactUsPage
 from pages.home_page import HomePage
@@ -41,6 +42,7 @@ def setup_page_function(request, page):
         request.cls.sign_up_page = SignUpPage(page)
         request.cls.contact_us_page = ContactUsPage(page)
         request.cls.header =Header(page)
+        request.cls.footer = Footer(page)
         request.cls.home_page = HomePage(page)
         request.cls.products_page = ProductsPage(page)
         request.cls.product_details_page = ProductDetailsPage(page)

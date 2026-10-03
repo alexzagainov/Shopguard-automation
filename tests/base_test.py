@@ -1,3 +1,4 @@
+from pages.components.footer import Footer
 from pages.components.header import Header
 from pages.contact_us_page import ContactUsPage
 from pages.home_page import HomePage
@@ -12,6 +13,7 @@ class BaseTest:
     sign_up_page: SignUpPage
     contact_us_page: ContactUsPage
     header: Header
+    footer: Footer
     home_page: HomePage
     products_page: ProductsPage
     product_details_page: ProductDetailsPage
