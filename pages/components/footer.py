@@ -5,10 +5,20 @@ from pages.base_page import BasePage
 
 
 class Footer(BasePage):
-    __SUBSCRIPTION_EMAIL__ = "#susbscribe_email"   # the site really spells it "susbscribe"
+    __SUBSCRIPTION_TITLE__ = ".single-widget h2"
+    __SUBSCRIPTION_EMAIL__ ="#susbscribe_email"   # the site really spells it "susbscribe"
     __SUBSCRIPTION_BUTTON__ = "#subscribe"
     # always in the HTML but hidden - it's shown for ~1.5 seconds after subscribing
     __SUBSCRIBE_SUCCESS__ = "#success-subscribe"
+
+    @allure.step("Get subscription title")
+    def get_subscription_title(self) -> str:
+        # text_content = the text in the HTML, not affected by CSS uppercase
+        return self.page.locator(self.__SUBSCRIPTION_TITLE__).text_content().strip()
+
+    @allure.step("Check that subscription title is on the screen")
+    def is_subscription_title_in_viewport(self) -> bool:
+        return self.is_in_viewport(self.__SUBSCRIPTION_TITLE__)
 
     @allure.step("Fill subscription email: {email}")
     def fill_subscription_email(self, email: str):

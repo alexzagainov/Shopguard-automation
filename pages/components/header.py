@@ -51,4 +51,5 @@ class Header(BasePage):
 
     @allure.step("Get 'Logged in as' text")
     def get_logged_in_as_username(self):
-        return self.get_text(self.__LOGGED_IN_AS_TXT__)
+        # the link text starts with a space after the user icon
+        return self.get_text(self.__LOGGED_IN_AS_TXT__).strip()

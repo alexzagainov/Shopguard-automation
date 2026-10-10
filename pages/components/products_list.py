@@ -7,6 +7,8 @@ from pages.components.cart_modal import CartModal
 
 class ProductsList(BasePage):
     # the same product cards appear on home, products, search, category and brand pages
+    # "Features Items", "All Products", "Searched Products", "Women - Tops Products", "Brand - Polo Products"
+    __TITLE__ = '.features_items h2.title'
     __PRODUCT_CARDS__ = '.features_items .product-image-wrapper'
     __PRODUCT_NAME__ = '.productinfo p'
     __PRODUCT_PRICE__ = '.productinfo h2'
@@ -17,6 +19,11 @@ class ProductsList(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.cart_modal = CartModal(page)
+
+    @allure.step("Get products list title")
+    def get_title(self) -> str:
+        # text_content = the text in the HTML, not affected by CSS uppercase
+        return self.page.locator(self.__TITLE__).text_content().strip()
 
     @allure.step("Get products names")
     def get_products_names(self) -> list:
