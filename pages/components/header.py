@@ -5,14 +5,14 @@ from pages.base_page import BasePage
 
 
 class Header(BasePage):
-    __LOGIN_SIGNUP_TITLE__= ".fa.fa-lock"
-    __LOGGED_IN_AS_TXT__='a:has(.fa-user)'
-    __LOGOUT__='a:has(.fa-lock)'
-    __DELETE_ACCOUNT__='a:has(.fa-trash-o)'
-    __PRODUCTS__= 'a:has(.material-icons.card_travel)'
-    __CART__= 'li>a>.fa.fa-shopping-cart'
-    __CONTACT_US__= '.fa.fa-envelope'
-    __HOME__= 'a:has(.fa-home)'
+    _LOGIN_SIGNUP_TITLE= ".fa.fa-lock"
+    _LOGGED_IN_AS_TXT='a:has(.fa-user)'
+    _LOGOUT='a:has(.fa-lock)'
+    _DELETE_ACCOUNT='a:has(.fa-trash-o)'
+    _PRODUCTS= 'a:has(.material-icons.card_travel)'
+    _CART= 'li>a>.fa.fa-shopping-cart'
+    _CONTACT_US= '.fa.fa-envelope'
+    _HOME= 'a:has(.fa-home)'
 
     def navigate(self, locator: str, url_ending: str):
         self.click(locator)
@@ -21,35 +21,36 @@ class Header(BasePage):
 
     @allure.step("Go to 'Signup / Login' page")
     def enter_login_signup_page(self):
-        self.navigate(self.__LOGIN_SIGNUP_TITLE__, "/login")
+        self.navigate(self._LOGIN_SIGNUP_TITLE, "/login")
 
 
     @allure.step("Logout")
     def logout(self):
         # /logout redirects to /login
-        self.navigate(self.__LOGOUT__, "/login")
+        self.navigate(self._LOGOUT, "/login")
 
     @allure.step("Delete account")
     def delete_account(self):
-        self.navigate(self.__DELETE_ACCOUNT__, "/delete_account")
+        self.navigate(self._DELETE_ACCOUNT, "/delete_account")
 
     @allure.step("Go to Home page")
     def home_page(self):
-        self.navigate(self.__HOME__, "automationexercise.com/")
+        # the site root - an address with nothing after the domain
+        self.navigate(self._HOME, "://[^/]+/")
 
     @allure.step("Go to Products page")
     def products(self):
-        self.navigate(self.__PRODUCTS__, "/products")
+        self.navigate(self._PRODUCTS, "/products")
 
     @allure.step("Go to Cart page")
     def cart(self):
-        self.navigate(self.__CART__, "/view_cart")
+        self.navigate(self._CART, "/view_cart")
 
     @allure.step("Go to Contact Us page")
     def contact_us(self):
-        self.navigate(self.__CONTACT_US__, "/contact_us")
+        self.navigate(self._CONTACT_US, "/contact_us")
 
     @allure.step("Get 'Logged in as' text")
     def get_logged_in_as_username(self):
         # the link text starts with a space after the user icon
-        return self.get_text(self.__LOGGED_IN_AS_TXT__).strip()
+        return self.get_text(self._LOGGED_IN_AS_TXT).strip()

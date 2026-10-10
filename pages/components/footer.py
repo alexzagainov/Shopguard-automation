@@ -1,32 +1,31 @@
 import allure
-from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
 from pages.base_page import BasePage
 
 
 class Footer(BasePage):
-    __SUBSCRIPTION_TITLE__ = ".single-widget h2"
-    __SUBSCRIPTION_EMAIL__ ="#susbscribe_email"   # the site really spells it "susbscribe"
-    __SUBSCRIPTION_BUTTON__ = "#subscribe"
+    _SUBSCRIPTION_TITLE = ".single-widget h2"
+    _SUBSCRIPTION_EMAIL ="#susbscribe_email"   # the site really spells it "susbscribe"
+    _SUBSCRIPTION_BUTTON = "#subscribe"
     # always in the HTML but hidden - it's shown for ~1.5 seconds after subscribing
-    __SUBSCRIBE_SUCCESS__ = "#success-subscribe"
+    _SUBSCRIBE_SUCCESS = "#success-subscribe"
 
     @allure.step("Get subscription title")
     def get_subscription_title(self) -> str:
         # text_content = the text in the HTML, not affected by CSS uppercase
-        return self.page.locator(self.__SUBSCRIPTION_TITLE__).text_content().strip()
+        return self.page.locator(self._SUBSCRIPTION_TITLE).text_content().strip()
 
     @allure.step("Check that subscription title is on the screen")
     def is_subscription_title_in_viewport(self) -> bool:
-        return self.is_in_viewport(self.__SUBSCRIPTION_TITLE__)
+        return self.is_in_viewport(self._SUBSCRIPTION_TITLE)
 
     @allure.step("Fill subscription email: {email}")
     def fill_subscription_email(self, email: str):
-        self.fill_text(self.__SUBSCRIPTION_EMAIL__, email)
+        self.fill_text(self._SUBSCRIPTION_EMAIL, email)
 
     @allure.step("Click subscribe button")
     def click_subscribe_button(self):
-        self.click(self.__SUBSCRIPTION_BUTTON__)
+        self.click(self._SUBSCRIPTION_BUTTON)
 
     @allure.step("Subscribe with email {email}")
     def subscribe(self, email: str):
@@ -36,11 +35,7 @@ class Footer(BasePage):
     @allure.step("Check that subscription success message appeared")
     def is_subscribe_success_visible(self, timeout: int = 3000) -> bool:
         # call right after subscribe() - the message hides again after ~1.5 seconds
-        try:
-            self.page.locator(self.__SUBSCRIBE_SUCCESS__).wait_for(state="visible", timeout=timeout)
-            return True
-        except PlaywrightTimeoutError:
-            return False
+        return self.is_visible(self._SUBSCRIBE_SUCCESS, timeout)
 
     def get_validation_message_on_field(self) -> str:
-        return self.get_validation_message(self.__SUBSCRIPTION_EMAIL__)
+        return self.get_validation_message(self._SUBSCRIPTION_EMAIL)

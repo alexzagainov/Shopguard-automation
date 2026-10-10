@@ -1,9 +1,12 @@
+import allure
+
 from models.user import User
 from tests.base_test import BaseTest
 
 SUCCESS_MESSAGE = "Your order has been placed successfully!"
 
 
+@allure.feature("Checkout")
 class TestCheckout(BaseTest):
 
     def add_products_to_cart(self, indexes: list) -> tuple:
@@ -62,10 +65,10 @@ class TestCheckout(BaseTest):
         assert self.account_deleted_page.get_account_deleted_title() == "Account Deleted!"
         self.account_deleted_page.continue_after_delete_account()
 
-    # Test Case 14
+    @allure.title("TC14: Place order - register while checkout")
     def test_register_while_checkout(self):
         user = User()
-        assert self.home_page.get_page_url() == "https://automationexercise.com/", "home page is not displayed"
+        assert self.home_page.get_page_url() == f"{self.base_url}/", "home page is not displayed"
         expected_names, expected_prices = self.add_products_to_cart([0, 1, 2])
 
         self.go_to_checkout()
@@ -83,10 +86,10 @@ class TestCheckout(BaseTest):
         self.place_order_and_pay(user)
         self.delete_account()
 
-    # Test Case 15
+    @allure.title("TC15: Place order - register before checkout")
     def test_register_before_checkout(self):
         user = User()
-        assert self.home_page.get_page_url() == "https://automationexercise.com/", "home page is not displayed"
+        assert self.home_page.get_page_url() == f"{self.base_url}/", "home page is not displayed"
         self.sign_up(user)
         self.verify_account_created_and_continue()
         self.verify_logged_in(user)
@@ -98,9 +101,9 @@ class TestCheckout(BaseTest):
         self.place_order_and_pay(user)
         self.delete_account()
 
-    # Test Case 16
+    @allure.title("TC16: Place order - login before checkout")
     def test_login_before_checkout(self, registered_user: User):
-        assert self.home_page.get_page_url() == "https://automationexercise.com/", "home page is not displayed"
+        assert self.home_page.get_page_url() == f"{self.base_url}/", "home page is not displayed"
         self.header.enter_login_signup_page()
         self.login_page.login(registered_user.email, registered_user.password)
         self.verify_logged_in(registered_user)
@@ -112,10 +115,10 @@ class TestCheckout(BaseTest):
         self.place_order_and_pay(registered_user)
         self.delete_account()
 
-    # Test Case 23
+    @allure.title("TC23: Verify address details in checkout page")
     def test_address_details_in_checkout(self):
         user = User()
-        assert self.home_page.get_page_url() == "https://automationexercise.com/", "home page is not displayed"
+        assert self.home_page.get_page_url() == f"{self.base_url}/", "home page is not displayed"
         self.sign_up(user)
         self.verify_account_created_and_continue()
         self.verify_logged_in(user)

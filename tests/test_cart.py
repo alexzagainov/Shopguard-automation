@@ -1,10 +1,13 @@
+import allure
 import pytest
 
 from models.user import User
 from tests.base_test import BaseTest
 
 
+@allure.feature("Cart")
 class TestCart(BaseTest):
+    @allure.title("TC12: Add one product to cart")
     def test_add_one_product_to_cart(self):
         self.header.products()
         expected_name = self.products_list.get_products_names()[0]
@@ -24,6 +27,7 @@ class TestCart(BaseTest):
         pytest.param([0, 2, 5], id="3 products"),
         pytest.param([3, 7, 10, 20], id="4 products"),
     ])
+    @allure.title("TC12: Add products {indexes} to cart")
     def test_add_few_products_to_cart(self, indexes: list):
         self.header.products()
         all_names = self.products_list.get_products_names()
@@ -49,6 +53,7 @@ class TestCart(BaseTest):
         pytest.param(3, id="3 times"),
         pytest.param(5, id="5 times"),
     ])
+    @allure.title("Add the same product {times} times from the products list")
     def test_add_same_product_few_times(self, times: int):
         self.header.products()
         expected_name = self.products_list.get_products_names()[0]
@@ -67,9 +72,26 @@ class TestCart(BaseTest):
         assert self.cart_page.get_products_quantities() == [times], "wrong quantity in cart"
         assert self.cart_page.get_products_totals() == [expected_price * times], "wrong total in cart"
 
-    # Test Case 17
+    @allure.title("TC13: Verify product quantity in cart")
+    def test_product_quantity_in_cart(self):
+        quantity = 4
+        assert self.home_page.get_page_url() == f"{self.base_url}/", "home page is not displayed"
+        self.products_list.view_product(0)
+        assert self.product_details_page.is_details_visible(), "product details are not visible"
+        expected_name = self.product_details_page.get_name()
+        expected_price = self.product_details_page.get_price()
+
+        self.product_details_page.add_to_cart(quantity)
+        self.product_details_page.view_cart()
+
+        names = self.cart_page.get_products_names()
+        assert names == [expected_name], f"expected only '{expected_name}' in cart, found {names}"
+        assert self.cart_page.get_products_quantities() == [quantity], "wrong quantity in cart"
+        assert self.cart_page.get_products_totals() == [expected_price * quantity], "wrong total in cart"
+
+    @allure.title("TC17: Remove products from cart")
     def test_remove_product_from_cart(self):
-        assert self.home_page.get_page_url() == "https://automationexercise.com/", "home page is not displayed"
+        assert self.home_page.get_page_url() == f"{self.base_url}/", "home page is not displayed"
         all_names = self.products_list.get_products_names()
         for i in [0, 1]:
             self.products_list.add_to_cart(i)
@@ -85,7 +107,7 @@ class TestCart(BaseTest):
         assert self.cart_page.get_products_names() == [], "cart should be empty"
         assert self.cart_page.is_empty_cart_message_visible(), "'Cart is empty!' is not visible"
 
-    # Test Case 20
+    @allure.title("TC20: Search products and verify cart after login")
     def test_search_products_and_verify_cart_after_login(self, registered_user: User):
         keyword = "jeans"
         self.header.products()
@@ -111,7 +133,7 @@ class TestCart(BaseTest):
         names = self.cart_page.get_products_names()
         assert names == found, f"expected {found} in cart after login, found {names}"
 
-    # Test Case 22
+    @allure.title("TC22: Add to cart from recommended items")
     def test_add_to_cart_from_recommended_items(self):
         assert self.home_page.is_recommended_items_visible(), "'Recommended Items' are not visible"
         expected_name = self.home_page.get_recommended_name(0)

@@ -56,6 +56,15 @@ class BasePage:
         except PlaywrightTimeoutError:
             return False
 
+    def is_visible(self, locator: str, timeout: int = 3000) -> bool:
+        # waits up to timeout (ms) for the element to be visible - locator.is_visible() answers at once,
+        # so it returns False when the page is just a bit slow
+        try:
+            self.page.locator(locator).wait_for(state="visible", timeout=timeout)
+            return True
+        except PlaywrightTimeoutError:
+            return False
+
     def is_in_viewport(self, locator: str, timeout: int = 3000) -> bool:
         # "on the screen" - is_visible() is True also for elements you have to scroll to
         try:

@@ -1,3 +1,6 @@
+import pytest
+from playwright.sync_api import Page
+
 from models.user import User
 from pages.account_deleted_page import AccountDeletedPage
 from pages.components.footer import Footer
@@ -16,20 +19,26 @@ from pages.sign_up_page import SignUpPage
 
 
 class BaseTest:
-    login_page: LoginPage
-    sign_up_page: SignUpPage
-    contact_us_page: ContactUsPage
-    header: Header
-    footer: Footer
-    products_list: ProductsList
-    sidebar: Sidebar
-    home_page: HomePage
-    products_page: ProductsPage
-    product_details_page: ProductDetailsPage
-    cart_page: CartPage
-    checkout_page: CheckoutPage
-    account_deleted_page: AccountDeletedPage
-    payment_page: PaymentPage
+
+    # runs before every test of every class that inherits BaseTest - the only place pages are created
+    @pytest.fixture(autouse=True)
+    def setup_pages(self, page: Page, base_url: str):
+        self.page = page
+        self.base_url = base_url
+        self.login_page = LoginPage(page)
+        self.sign_up_page = SignUpPage(page)
+        self.contact_us_page = ContactUsPage(page)
+        self.header = Header(page)
+        self.footer = Footer(page)
+        self.products_list = ProductsList(page)
+        self.sidebar = Sidebar(page)
+        self.home_page = HomePage(page)
+        self.products_page = ProductsPage(page)
+        self.product_details_page = ProductDetailsPage(page)
+        self.cart_page = CartPage(page)
+        self.checkout_page = CheckoutPage(page)
+        self.account_deleted_page = AccountDeletedPage(page)
+        self.payment_page = PaymentPage(page)
 
     def sign_up(self, user: User):
         self.header.enter_login_signup_page()
