@@ -1,20 +1,19 @@
-import time
-
-import pytest
+import allure
 
 from tests.base_test import BaseTest
 
 
-
+@allure.feature("Home")
 class TestHome(BaseTest):
 
+    @allure.title("TC7: Verify Test Cases page")
     def test_enter_test_case(self):
         self.home_page.click_testcase_button()
-        assert self.home_page.get_page_url()=="https://automationexercise.com/test_cases"
+        assert self.home_page.get_page_url() == f"{self.base_url}/test_cases"
 
-    # Test Case 25
+    @allure.title("TC25: Scroll up using the arrow button")
     def test_scroll_up_with_arrow(self):
-        assert self.home_page.get_page_url() == "https://automationexercise.com/", "home page is not displayed"
+        assert self.home_page.get_page_url() == f"{self.base_url}/", "home page is not displayed"
         self.home_page.scroll_to_bottom()
         assert self.footer.is_subscription_title_in_viewport(), "'Subscription' is not on the screen"
         assert self.footer.get_subscription_title() == "Subscription"
@@ -25,9 +24,9 @@ class TestHome(BaseTest):
         assert self.home_page.is_slider_title_in_viewport(), "page did not scroll up"
         assert self.home_page.get_slider_title() == "Full-Fledged practice website for Automation Engineers"
 
-    # Test Case 26
+    @allure.title("TC26: Scroll up without the arrow button")
     def test_scroll_up_without_arrow(self):
-        assert self.home_page.get_page_url() == "https://automationexercise.com/", "home page is not displayed"
+        assert self.home_page.get_page_url() == f"{self.base_url}/", "home page is not displayed"
         self.home_page.scroll_to_bottom()
         assert self.footer.is_subscription_title_in_viewport(), "'Subscription' is not on the screen"
         assert self.footer.get_subscription_title() == "Subscription"

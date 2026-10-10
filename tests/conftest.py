@@ -1,25 +1,12 @@
 import re
 from typing import Dict
+
+import allure
 import pytest
 
 from models.user import User
-from pages.account_deleted_page import AccountDeletedPage
 from pages.base_page import BasePage
-from pages.components.footer import Footer
-from pages.components.header import Header
-from pages.components.products_list import ProductsList
-from pages.components.sidebar import Sidebar
-from pages.cart_page import CartPage
-from pages.checkout_page import CheckoutPage
-from pages.contact_us_page import ContactUsPage
-from pages.home_page import HomePage
-from pages.login_page import LoginPage
-from pages.payment_page import PaymentPage
-from pages.product_details_page import ProductDetailsPage
-from pages.products_page import ProductsPage
-from pages.sign_up_page import SignUpPage
 
-API_URL = "https://automationexercise.com/api"
 AD_URLS = re.compile(r"googlesyndication|doubleclick|googleads|adservice|google-analytics|googletagmanager|fundingchoices")
 
 
@@ -41,32 +28,27 @@ def setup_page_function(request, page):
 
     # block ads: they slow down page loads and can cover buttons
     page.route(AD_URLS, lambda route: route.abort())
-    page.goto("https://automationexercise.com", wait_until="domcontentloaded")
+    # "/" = the base_url from pytest.ini
+    page.goto("/", wait_until="domcontentloaded")
 
-    # only attach to the class if the test is inside a class
-    if request.cls is not None:
-        request.cls.page = page
-        request.cls.login_page = LoginPage(page)
-        request.cls.sign_up_page = SignUpPage(page)
-        request.cls.contact_us_page = ContactUsPage(page)
-        request.cls.header =Header(page)
-        request.cls.footer = Footer(page)
-        request.cls.products_list = ProductsList(page)
-        request.cls.sidebar = Sidebar(page)
-        request.cls.home_page = HomePage(page)
-        request.cls.products_page = ProductsPage(page)
-        request.cls.product_details_page = ProductDetailsPage(page)
-        request.cls.cart_page = CartPage(page)
-        request.cls.checkout_page = CheckoutPage(page)
-        request.cls.account_deleted_page = AccountDeletedPage(page)
-        request.cls.payment_page = PaymentPage(page)
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    # when a test fails, attach what the browser showed to the Allure report
+    outcome = yield
+    report = outcome.get_result()
+    page = item.funcargs.get("page")
+    if report.when == "call" and report.failed and page is not None:
+        allure.attach(page.screenshot(full_page=True), name="screenshot on failure",
+                      attachment_type=allure.attachment_type.PNG)
+        allure.attach(page.url, name="url on failure", attachment_type=allure.attachment_type.TEXT)
 
 
 @pytest.fixture
-def registered_user(page) -> User:
+def registered_user(page, base_url) -> User:
     # a user that already exists before the test - created through the site's API, not the UI
     user = User()
-    response = page.request.post(f"{API_URL}/createAccount", form={
+    response = page.request.post(f"{base_url}/api/createAccount", form={
         "name": user.name, "email": user.email, "password": user.password, "title": user.title,
         "birth_date": user.day_of_birth, "birth_month": user.month_of_birth, "birth_year": user.year_of_birth,
         "firstname": user.first_name, "lastname": user.last_name, "company": user.company,
@@ -77,4 +59,4 @@ def registered_user(page) -> User:
     assert response.json()["responseCode"] == 201, f"could not create user: {response.text()}"
     yield user
     # runs also when the test fails; if the test already deleted the account the API answers 404 - that's fine
-    page.request.delete(f"{API_URL}/deleteAccount", form={"email": user.email, "password": user.password})
+    page.request.delete(f"{base_url}/api/deleteAccount", form={"email": user.email, "password": user.password})

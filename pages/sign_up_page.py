@@ -9,39 +9,39 @@ from pages.base_page import BasePage
 
 class SignUpPage(BasePage):
 
-    __MR_RADIO_BUTTON__=  '#id_gender1'
-    __MRS_RADIO_BUTTON__= '#id_gender2'
-    __NAME__= '#name'
-    __PASSWORD__= '#password'
-    __DAY_OF_BIRTH__= '#days'
-    __MONTH_OF_BIRTH__= '#months'
-    __YEAR_OF_BIRTH__= '#years'
-    __NEWSLETTER_CHECKBOX__= '#newsletter'
-    __SPECIAL_OFFERS_CHECKBOX__= '#optin'
-    __FIRST_NAME__= '#first_name'
-    __LAST_NAME__= '#last_name'
-    __COMPANY__= '#company'
-    __ADDRESS__= '#address1'
-    __ADDRESS2__= '#address2'
-    __COUNTRY__= '#country'
-    __STATE__= '#state'
-    __CITY__= '#city'
-    __ZIPCODE__= '#zipcode'
-    __MOBILE_NUMBER__= '#mobile_number'
-    __CREATE_ACCOUNT_BUTTON__= '[data-qa="create-account"]'
-    __ACCOUNT_CREATED_TITLE__= '[data-qa="account-created"]'
-    __CONTINUE_BUTTTON__='[data-qa="continue-button"]'
+    _MR_RADIO_BUTTON=  '#id_gender1'
+    _MRS_RADIO_BUTTON= '#id_gender2'
+    _NAME= '#name'
+    _PASSWORD= '#password'
+    _DAY_OF_BIRTH= '#days'
+    _MONTH_OF_BIRTH= '#months'
+    _YEAR_OF_BIRTH= '#years'
+    _NEWSLETTER_CHECKBOX= '#newsletter'
+    _SPECIAL_OFFERS_CHECKBOX= '#optin'
+    _FIRST_NAME= '#first_name'
+    _LAST_NAME= '#last_name'
+    _COMPANY= '#company'
+    _ADDRESS= '#address1'
+    _ADDRESS2= '#address2'
+    _COUNTRY= '#country'
+    _STATE= '#state'
+    _CITY= '#city'
+    _ZIPCODE= '#zipcode'
+    _MOBILE_NUMBER= '#mobile_number'
+    _CREATE_ACCOUNT_BUTTON= '[data-qa="create-account"]'
+    _ACCOUNT_CREATED_TITLE= '[data-qa="account-created"]'
+    _CONTINUE_BUTTON='[data-qa="continue-button"]'
     # keys = User field names, values = locators of fields marked "required" in the HTML
-    __REQUIRED_FIELDS__ = {
-        "name": __NAME__,
-        "password": __PASSWORD__,
-        "first_name": __FIRST_NAME__,
-        "last_name": __LAST_NAME__,
-        "address": __ADDRESS__,
-        "state": __STATE__,
-        "city": __CITY__,
-        "zipcode": __ZIPCODE__,
-        "mobile_number": __MOBILE_NUMBER__,
+    _REQUIRED_FIELDS = {
+        "name": _NAME,
+        "password": _PASSWORD,
+        "first_name": _FIRST_NAME,
+        "last_name": _LAST_NAME,
+        "address": _ADDRESS,
+        "state": _STATE,
+        "city": _CITY,
+        "zipcode": _ZIPCODE,
+        "mobile_number": _MOBILE_NUMBER,
     }
 
 
@@ -55,45 +55,45 @@ class SignUpPage(BasePage):
     @allure.step("Fill account information form")
     def fill_the_signup_form(self, user: User):
         if user.title == "Mrs":
-            self.check(self.__MRS_RADIO_BUTTON__)
+            self.check(self._MRS_RADIO_BUTTON)
         else:
-            self.check(self.__MR_RADIO_BUTTON__)
+            self.check(self._MR_RADIO_BUTTON)
         # email is filled on the previous page and is disabled here
-        self.fill_text(self.__NAME__, user.name)
-        self.fill_text(self.__PASSWORD__, user.password)
-        self.select_option(self.__DAY_OF_BIRTH__, user.day_of_birth)
-        self.select_option(self.__MONTH_OF_BIRTH__, user.month_of_birth)
-        self.select_option(self.__YEAR_OF_BIRTH__, user.year_of_birth)
+        self.fill_text(self._NAME, user.name)
+        self.fill_text(self._PASSWORD, user.password)
+        self.select_option(self._DAY_OF_BIRTH, user.day_of_birth)
+        self.select_option(self._MONTH_OF_BIRTH, user.month_of_birth)
+        self.select_option(self._YEAR_OF_BIRTH, user.year_of_birth)
         if user.newsletter:
-            self.check(self.__NEWSLETTER_CHECKBOX__)
+            self.check(self._NEWSLETTER_CHECKBOX)
         if user.special_offers:
-            self.check(self.__SPECIAL_OFFERS_CHECKBOX__)
-        self.fill_if_set(self.__FIRST_NAME__, user.first_name)
-        self.fill_if_set(self.__LAST_NAME__, user.last_name)
-        self.fill_if_set(self.__COMPANY__, user.company)
-        self.fill_if_set(self.__ADDRESS__, user.address)
-        self.fill_if_set(self.__ADDRESS2__, user.address2)
-        self.select_option(self.__COUNTRY__, user.country)
-        self.fill_if_set(self.__STATE__, user.state)
-        self.fill_if_set(self.__CITY__, user.city)
-        self.fill_if_set(self.__ZIPCODE__, user.zipcode)
-        self.fill_if_set(self.__MOBILE_NUMBER__, user.mobile_number)
+            self.check(self._SPECIAL_OFFERS_CHECKBOX)
+        self.fill_if_set(self._FIRST_NAME, user.first_name)
+        self.fill_if_set(self._LAST_NAME, user.last_name)
+        self.fill_if_set(self._COMPANY, user.company)
+        self.fill_if_set(self._ADDRESS, user.address)
+        self.fill_if_set(self._ADDRESS2, user.address2)
+        self.select_option(self._COUNTRY, user.country)
+        self.fill_if_set(self._STATE, user.state)
+        self.fill_if_set(self._CITY, user.city)
+        self.fill_if_set(self._ZIPCODE, user.zipcode)
+        self.fill_if_set(self._MOBILE_NUMBER, user.mobile_number)
 
     @allure.step("Click 'Create Account'")
     def create_account(self):
-        self.click(self.__CREATE_ACCOUNT_BUTTON__)
+        self.click(self._CREATE_ACCOUNT_BUTTON)
 
     @allure.step("Get 'Account Created' title")
     def get_account_created_title(self) -> str:
         # text_content = the text in the HTML, not affected by CSS uppercase
-        return self.page.locator(self.__ACCOUNT_CREATED_TITLE__).text_content().strip()
+        return self.page.locator(self._ACCOUNT_CREATED_TITLE).text_content().strip()
 
     @allure.step("Get validation message of {field}")
     def get_field_validation_message(self, field: str) -> str:
-        return self.get_validation_message(self.__REQUIRED_FIELDS__[field])
+        return self.get_validation_message(self._REQUIRED_FIELDS[field])
 
     @allure.step("Click 'Continue'")
     def continue_after_create_account(self):
-        self.click(self.__CONTINUE_BUTTTON__)
+        self.click(self._CONTINUE_BUTTON)
 
 

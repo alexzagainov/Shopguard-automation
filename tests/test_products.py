@@ -1,9 +1,12 @@
+import allure
 import pytest
 
 from tests.base_test import BaseTest
 
 
+@allure.feature("Products")
 class TestProducts(BaseTest):
+    @allure.title("TC8: Verify product details page")
     def test_product_details(self):
         self.header.products()
         self.products_list.view_product(0)
@@ -15,6 +18,7 @@ class TestProducts(BaseTest):
         pytest.param("", True, id="empty - shows all products"),
         pytest.param("to@p", False, id="wrong search"),
     ])
+    @allure.title("TC9: Search product '{search_key}'")
     def test_search(self,search_key,should_find):
         self.header.products()
         self.products_page.search(search_key)
@@ -24,7 +28,7 @@ class TestProducts(BaseTest):
         else:
             assert results == [], f"expected no results for '{search_key}', got {results}"
 
-    # Test Case 18
+    @allure.title("TC18: View category products")
     def test_view_category_products(self):
         assert self.sidebar.is_categories_visible(), "categories are not visible"
         self.sidebar.open_category("Women", "Tops")
@@ -35,7 +39,7 @@ class TestProducts(BaseTest):
         assert self.products_list.get_title() == "Men - Jeans Products"
         assert len(self.products_list.get_products_names()) > 0, "no products in category"
 
-    # Test Case 19
+    @allure.title("TC19: View and cart brand products")
     def test_view_brand_products(self):
         self.header.products()
         assert self.sidebar.is_brands_visible(), "brands are not visible"
@@ -48,7 +52,7 @@ class TestProducts(BaseTest):
             count = len(self.products_list.get_products_names())
             assert count == brands[brand], f"'{brand}' shows {count} products, the side bar says {brands[brand]}"
 
-    # Test Case 21
+    @allure.title("TC21: Add review on product")
     def test_add_review_on_product(self):
         self.header.products()
         assert self.products_list.get_title() == "All Products"
