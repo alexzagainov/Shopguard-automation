@@ -1,6 +1,6 @@
 import re
 
-from playwright.sync_api import Page, TimeoutError as PlaywrightTimeoutError
+from playwright.sync_api import Page, TimeoutError as PlaywrightTimeoutError, expect
 
 class BasePage:
     # set from conftest: highlight fields only when running with --headed
@@ -54,6 +54,14 @@ class BasePage:
             self.page.locator(locator).wait_for(state="attached", timeout=timeout)
             return True
         except PlaywrightTimeoutError:
+            return False
+
+    def is_in_viewport(self, locator: str, timeout: int = 3000) -> bool:
+        # "on the screen" - is_visible() is True also for elements you have to scroll to
+        try:
+            expect(self.page.locator(locator)).to_be_in_viewport(timeout=timeout)
+            return True
+        except AssertionError:
             return False
 
     def get_page_url(self):

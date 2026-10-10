@@ -11,13 +11,6 @@ REQUIRED_MESSAGE = "Please fill out this field."
 
 class TestSignUp(BaseTest):
 
-    def sign_up(self, user: User):
-        self.header.enter_login_signup_page()
-        self.login_page.sign_up(user.name, user.email)
-        self.sign_up_page.fill_the_signup_form(user)
-        self.sign_up_page.create_account()
-
-
     @pytest.mark.parametrize("user", [
         pytest.param(User(title="Mr"), id="mr"),
         pytest.param(User(title="Mrs"), id="mrs"),
@@ -73,7 +66,7 @@ class TestSignUp(BaseTest):
     def test_create_account(self):
         self.sign_up(User())
         self.sign_up_page.continue_after_create_account()
-        assert self.header.get_logged_in_as_username()==f" Logged in as {User().name}"
+        assert self.header.get_logged_in_as_username() == f"Logged in as {User().name}"
 
 
     def test_register_user_with_existing_email(self):

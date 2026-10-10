@@ -15,6 +15,13 @@ class ProductDetailsPage(BasePage):
     __BRAND__ = ".product-information p:has(b:text-is('Brand:'))"
     __QUANTITY__ = '#quantity'
     __ADD_TO_CART__ = '.product-information button.cart'
+    __WRITE_REVIEW_TAB__ = "a[href='#reviews']"
+    __REVIEW_NAME__ = '#review-form #name'
+    __REVIEW_EMAIL__ = '#review-form #email'
+    __REVIEW_TEXT__ = '#review-form #review'
+    __REVIEW_SUBMIT__ = '#button-review'
+    # the outer #review-section has 0 height, so Playwright sees it as hidden - check the alert inside it
+    __REVIEW_SUCCESS__ = '#review-section .alert-success'
 
     __DETAILS__ = {
         "name": __PRODUCT_NAME__,
@@ -51,6 +58,24 @@ class ProductDetailsPage(BasePage):
         self.fill_text(self.__QUANTITY__, str(quantity))
         self.click(self.__ADD_TO_CART__)
         self.cart_modal.wait_until_open()
+
+    @allure.step("Check that 'Write Your Review' is visible")
+    def is_write_review_visible(self) -> bool:
+        return self.page.locator(self.__WRITE_REVIEW_TAB__).is_visible()
+
+    @allure.step("Write review as {name}")
+    def write_review(self, name: str, email: str, review: str):
+        self.fill_text(self.__REVIEW_NAME__, name)
+        self.fill_text(self.__REVIEW_EMAIL__, email)
+        self.fill_text(self.__REVIEW_TEXT__, review)
+        self.click(self.__REVIEW_SUBMIT__)
+
+    @allure.step("Get review success message")
+    def get_review_success_message(self) -> str:
+        # call right after write_review() - the message hides again after 2 seconds
+        message = self.page.locator(self.__REVIEW_SUCCESS__)
+        message.wait_for(state="visible", timeout=2000)
+        return message.inner_text().strip()
 
     def continue_shopping(self):
         self.cart_modal.continue_shopping()
